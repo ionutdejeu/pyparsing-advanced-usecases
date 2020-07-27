@@ -1,0 +1,7 @@
+Main purpose of this project is to parse the following logical expressions:
+property = search_operator('param')
+group.property = 12
+group.proerty = true
+group.property = 'test'
+search_operator('param')= 'string'
+search_operator('param')= 'string'
