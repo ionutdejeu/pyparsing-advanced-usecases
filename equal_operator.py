@@ -12,7 +12,7 @@ LHS = string | integer | boolean | variable
 
 operator = oneOf("= < > <= >= != ")
 
-equation = variable + operator + LHS # will match "x=2+2", etc.
+equation = variable + operator + LHS
 
 
 
