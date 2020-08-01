@@ -9,12 +9,26 @@ scheme = oneOf('http https')('scheme')
 host = Combine(delimitedList(Word(url_chars), '.'))('host')
 port = Suppress(':') + Word(nums)('port')
 
-version = CaselessKeyword('v1')
-module = Word(alphanums)
-entity = Word(alphanums)
+version = Combine(
+    Suppress('/')
+    +CaselessKeyword('v1')
+)('version')
+module = Combine(
+    Suppress('/')
+    +Word(url_chars)
+)('module')
+entity_type = Combine(
+    Suppress('/')
+    +Word(url_chars)
+)('entity')
+entity_id = Combine(
+    Suppress('/')
+    +Word(url_chars)
+)
 
 query_pair = Group(Word(url_chars) + Suppress('=') + Word(url_chars))
 query = Group(Suppress('?') + delimitedList(query_pair, '&'))('query')
+
 
 path = Combine(
   Suppress('/')
@@ -26,12 +40,15 @@ url_parser = (
   + Suppress('://')
   + host
   + Optional(port)
-  + Optional(path)
+  + version
+  + module
+  + entity_type
+  + entity_id
   + Optional(query)
 )
 
 test_urls = [
-  'https://api2.host.com:929/v1/module/entity/id/'
+  'https://api2.host.com:929/v1/module/entity/test1?q=12231&order=desc&pagination=10&isValid=true'
 ]
 fmt = '{0:10s} {1}'
 
@@ -47,9 +64,12 @@ if __name__ == '__main__':
         print(fmt.format("Scheme:", tokens.scheme))
         print(fmt.format("Host:", tokens.host))
         print(fmt.format("Port:", tokens.port))
-        print(fmt.format("Path:", tokens.path))
+        print(fmt.format("V:", tokens.version))
+        print(fmt.format("M:", tokens.module))
+        print(fmt.format("E:", tokens.entity))
+        #print(fmt.format("Path:", tokens.path))
         print("Query:")
         for key, value in tokens.query:
             print("\t{} ==> {}".format(key, value))
-        print(fmt.format('Fragment:', tokens.fragment))
+        #print(fmt.format('Fragment:', tokens.fragment))
         print('-' * 60, '\n')
